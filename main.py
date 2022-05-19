@@ -15,9 +15,9 @@ with open('domain.txt','r') as f:
 
 for doamin in domain_list:
     try:
-        res = requests.get('http://'+doamin, headers=headers, verify=False, timeout=30)
+        res = requests.get('http://'+doamin, headers=headers, verify=False, timeout=10)
         res.encoding = UnicodeDammit(res.content).original_encoding
-        web_icp_list=re.findall('[京津沪渝冀晋辽吉黑苏浙皖蜀闽赣鲁豫鄂湘粤琼黔滇陕甘青台蒙桂藏宁新港澳]ICP备\d{8}号[-]?[\d*]{0,2}', res.text.replace('\n','').replace(' ',''))
+        web_icp_list=re.findall('[京津沪渝冀晋辽吉黑苏浙皖蜀闽赣鲁豫鄂湘粤琼黔滇陕甘青台蒙桂藏宁新港澳]ICP备\d{8}号[-]?[\d*]{0,2}(?!["])', res.text.replace('\n','').replace(' ',''))
         if web_icp_list != []:
             web_icp=web_icp_list[0]
         else:
@@ -25,9 +25,9 @@ for doamin in domain_list:
         visi = '是'
     except:
         try:
-            res = requests.get('https://' + doamin, headers=headers, verify=False, timeout=30)
+            res = requests.get('https://' + doamin, headers=headers, verify=False, timeout=10)
             res.encoding = UnicodeDammit(res.content).original_encoding
-            web_icp_list = re.findall('[京津沪渝冀晋辽吉黑苏浙皖蜀闽赣鲁豫鄂湘粤琼黔滇陕甘青台蒙桂藏宁新港澳]ICP备\d{8}号[-]?[\d*]{0,2}', res.text.replace('\n','').replace(' ',''))
+            web_icp_list = re.findall('[京津沪渝冀晋辽吉黑苏浙皖蜀闽赣鲁豫鄂湘粤琼黔滇陕甘青台蒙桂藏宁新港澳]ICP备\d{8}号[-]?[\d*]{0,2}(?!["])', res.text.replace('\n','').replace(' ',''))
             if web_icp_list != []:
                 web_icp = web_icp_list[0]
             else:
@@ -37,7 +37,7 @@ for doamin in domain_list:
             visi='否'
             web_icp='/'
     try:
-        res2=requests.get('https://api.muxiuge.com/api/beian/?domain=' + doamin, headers=headers, verify=False, timeout=30).json()
+        res2=requests.get('https://api.muxiuge.com/api/beian/?domain=' + doamin, headers=headers, verify=False, timeout=10).json()
         if res2['success']==True:
             name=res2['result']['name']
             nature=res2['result']['nature']
@@ -51,9 +51,6 @@ for doamin in domain_list:
         nature = '查询失败'
         icp = '查询失败'
 
-
-
-    time.sleep(1)
     result = '{},{},{},{},{},{}\n'.format(doamin,web_icp, icp, name, nature, visi)
     print(result)
     with open('icp.txt','a') as f:
